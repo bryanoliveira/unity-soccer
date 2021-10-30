@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
 
@@ -38,6 +39,10 @@ public class AgentSoccer : Agent
     float m_LateralSpeed;
     float m_ForwardSpeed;
 
+    [HideInInspector]
+    public GameObject ball;
+    [HideInInspector]
+    public Rigidbody ballRb;
 
     [HideInInspector]
     public Rigidbody agentRb;
@@ -48,6 +53,12 @@ public class AgentSoccer : Agent
 
     EnvironmentParameters m_ResetParams;
     SoccerEnvController m_EnvController;
+
+    void Start()
+    {
+        ball = GameObject.FindWithTag("ball");
+        ballRb = ball.GetComponent<Rigidbody>();
+    }
 
     public override void Initialize()
     {
@@ -217,4 +228,16 @@ public class AgentSoccer : Agent
         m_BallTouch = m_ResetParams.GetWithDefault("ball_touch", 0);
     }
 
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(transform.position.x);
+        sensor.AddObservation(transform.position.z);
+        sensor.AddObservation(transform.rotation.eulerAngles.y);
+        sensor.AddObservation(agentRb.velocity.x);
+        sensor.AddObservation(agentRb.velocity.z);
+        sensor.AddObservation(ball.transform.position.x);
+        sensor.AddObservation(ball.transform.position.z);
+        sensor.AddObservation(ballRb.velocity.x);
+        sensor.AddObservation(ballRb.velocity.z);
+    }
 }

@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SoccerTwos.unity
     guid: f8055e5dfa04643559678426a82225c1
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/WatchSoccerTwos.unity
     guid: 45a11bd97c03d71799e9f5ff62417820
   m_configObjects: {}
