@@ -983,7 +983,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1009000883}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7af6c43e99beaf1d2af72df0fbecda0c, type: 3}
   m_Name: 
@@ -2042,7 +2042,7 @@ MonoBehaviour:
   blueMaterial: {fileID: 2100000, guid: c9fa44c2c3f8ce74ca39a3355ea42631, type: 2}
   randomizePlayersTeamForTraining: 0
   agentRunSpeed: 2
-  gameDuration: 180
+  gameDuration: 120
   blueCelebrationText: BLUE SCORED!
   purpleCelebrationText: ORANGE SCORED!
 --- !u!1001 &1688997081
@@ -2253,7 +2253,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 3:00
+  m_Text: 2:00
 --- !u!222 &1886768775
 CanvasRenderer:
   m_ObjectHideFlags: 0

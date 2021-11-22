@@ -101,19 +101,11 @@ public class SoccerEnvController : MonoBehaviour
         {
             if (isVisualizer)
             {
+                m_GameTimer -= Time.fixedDeltaTime;
                 if (m_GameTimer > 0)
-                {
-                    m_GameTimer -= Time.fixedDeltaTime;
                     CanvasController.UpdateTimer(m_GameTimer);
-                }
                 else
-                {
-                    CanvasController.TriggerScoredAnimation("GAME OVER!");
-                    m_GameTimer = m_SoccerSettings.gameDuration;
-                    m_BlueAgentGroup.GroupEpisodeInterrupted();
-                    m_PurpleAgentGroup.GroupEpisodeInterrupted();
-                    ResetScene();
-                }
+                    StartCoroutine(GameOver());
             }
             else
             {
@@ -128,7 +120,6 @@ public class SoccerEnvController : MonoBehaviour
         }
     }
 
-
     public void ResetBall()
     {
         ball.transform.position = m_BallStartingPos;
@@ -141,6 +132,14 @@ public class SoccerEnvController : MonoBehaviour
         ballRb.velocity = Vector3.zero;
         ballRb.angularVelocity = Vector3.zero;
 
+    }
+
+    public void ExplodeBall()
+    {
+        int explosion = Random.Range(0, goalExplosions.Count);
+        goalExplosions[explosion].transform.position = ball.transform.position;
+        goalExplosions[explosion].Play();
+        ball.SetActive(false);
     }
 
     public void GoalTouched(Team scoredTeam)
@@ -189,10 +188,8 @@ public class SoccerEnvController : MonoBehaviour
                 direction = new Vector3(1, 0, 0);
                 CanvasController.TriggerScoredAnimation(m_SoccerSettings.purpleCelebrationText);
             }
-            int explosion = Random.Range(0, goalExplosions.Count);
-            goalExplosions[explosion].transform.position = ball.transform.position;
-            goalExplosions[explosion].Play();
-            ball.SetActive(false);
+
+            ExplodeBall();
 
             // push agents away from the goal
             foreach (var item in AgentsList)
@@ -204,6 +201,38 @@ public class SoccerEnvController : MonoBehaviour
             ball.SetActive(true);
             Time.timeScale = 1;
             StartCoroutine(StartDelayed());
+        }
+    }
+
+    public IEnumerator GameOver()
+    {
+        if (inGame)
+        {
+            inGame = false;
+            Time.timeScale = .5f;
+            // reset timers
+            m_GameTimer = 0;
+            CanvasController.UpdateTimer(m_GameTimer);
+
+            // interrupt mlagents episode
+            m_BlueAgentGroup.GroupEpisodeInterrupted();
+            m_PurpleAgentGroup.GroupEpisodeInterrupted();
+
+            // cheer and indicate game over
+            audioSource.PlayOneShot(cheerSounds[Random.Range(0, cheerSounds.Count)]);
+            if (purpleGoals > blueGoals)
+                CanvasController.TriggerScoredAnimation("ORANGE WINS!");
+            else if (blueGoals > purpleGoals)
+                CanvasController.TriggerScoredAnimation("BLUE WINS!");
+            else
+                CanvasController.TriggerScoredAnimation("IT'S A DRAW!");
+
+            ExplodeBall();
+
+            // reset game state
+            yield return new WaitForSeconds(2.5f);
+            Time.timeScale = 1;
+            CanvasController.StaticPause();
         }
     }
 

@@ -74,6 +74,11 @@ public class CanvasController : MonoBehaviour
         instance.purpleScoreText.text = score.ToString();
     }
 
+    public static void StaticPause()
+    {
+        instance.Pause();
+    }
+
     //// INSTANCE METHODS
 
     public void Pause()
