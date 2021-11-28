@@ -198,9 +198,17 @@ public class SoccerEnvController : MonoBehaviour
             yield return new WaitForSeconds(2);
             ResetScene();
 
-            ball.SetActive(true);
-            Time.timeScale = 1;
-            StartCoroutine(StartDelayed());
+            if (Mathf.Abs(purpleGoals - blueGoals) >= 10)
+            {
+                inGame = true;
+                StartCoroutine(GameOver());
+            }
+            else
+            {
+                ball.SetActive(true);
+                Time.timeScale = 1f;
+                StartCoroutine(StartDelayed());
+            }
         }
     }
 
