@@ -61,8 +61,10 @@ public class SoccerEnvController : MonoBehaviour
 
     void Start()
     {
-        blueGoals = 0;
-        purpleGoals = 0;
+        blueGoals = PlayerPrefs.GetInt("BlueScore", 0);
+        purpleGoals = PlayerPrefs.GetInt("PurpleScore", 0);
+        CanvasController.UpdateBlueScore(blueGoals);
+        CanvasController.UpdatePurpleScore(purpleGoals);
         inGame = false;
 
         audioSource = GetComponent<AudioSource>();
@@ -177,6 +179,7 @@ public class SoccerEnvController : MonoBehaviour
             if (isBlueTeam)
             {
                 blueGoals++;
+                PlayerPrefs.SetInt("BlueScore", blueGoals);
                 CanvasController.UpdateBlueScore(blueGoals);
                 direction = new Vector3(-1, 0, 0);
                 CanvasController.TriggerScoredAnimation(m_SoccerSettings.blueCelebrationText);
@@ -184,6 +187,7 @@ public class SoccerEnvController : MonoBehaviour
             else
             {
                 purpleGoals++;
+                PlayerPrefs.SetInt("PurpleScore", purpleGoals);
                 CanvasController.UpdatePurpleScore(purpleGoals);
                 direction = new Vector3(1, 0, 0);
                 CanvasController.TriggerScoredAnimation(m_SoccerSettings.purpleCelebrationText);

@@ -105,6 +105,8 @@ public class CanvasController : MonoBehaviour
 
     public void RestartGame()
     {
+        PlayerPrefs.SetInt("BlueScore", 0);
+        PlayerPrefs.SetInt("PurpleScore", 0);
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
