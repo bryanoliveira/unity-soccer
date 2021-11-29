@@ -18,9 +18,15 @@ public class CanvasController : MonoBehaviour
     [SerializeField]
     private Text scoredText;
     [SerializeField]
-    private InputField blueScoredInput;
+    private InputField blueGoalCelebrationInput;
     [SerializeField]
-    private InputField purpleScoredInput;
+    private InputField orangeGoalCelebrationInput;
+    [SerializeField]
+    private InputField blueWinnerCelebrationInput;
+    [SerializeField]
+    private InputField orangeWinnerCelebrationInput;
+    [SerializeField]
+    private InputField drawInput;
 
     // TOP UI
     [SerializeField]
@@ -28,23 +34,25 @@ public class CanvasController : MonoBehaviour
     [SerializeField]
     private Text blueScoreText;
     [SerializeField]
-    private Text purpleScoreText;
+    private Text orangeScoreText;
+    [SerializeField]
+    private Text blueTeamNameText;
+    [SerializeField]
+    private Text orangeTeamNameText;
     [SerializeField]
 
     private GameObject pauseMenu;
 
 
-    // Start is called before the first frame update
-    void Start()
+    // Awake is called before Start
+    void Awake()
     {
         if (instance == null)
             instance = this;
+    }
 
-        blueScoredInput.text = PlayerPrefs.GetString("BlueScoredText");
-        purpleScoredInput.text = PlayerPrefs.GetString("PurpleScoredText");
-        soccerSettings.blueCelebrationText = blueScoredInput.text;
-        soccerSettings.purpleCelebrationText = purpleScoredInput.text;
-
+    void Start()
+    {
         Pause();
     }
 
@@ -69,9 +77,9 @@ public class CanvasController : MonoBehaviour
         instance.blueScoreText.text = score.ToString();
     }
 
-    public static void UpdatePurpleScore(int score)
+    public static void UpdateOrangeScore(int score)
     {
-        instance.purpleScoreText.text = score.ToString();
+        instance.orangeScoreText.text = score.ToString();
     }
 
     public static void StaticPause()
@@ -86,18 +94,23 @@ public class CanvasController : MonoBehaviour
         // pause
         if (Time.timeScale == 1)
         {
-            blueScoredInput.text = PlayerPrefs.GetString("BlueScoredText");
-            purpleScoredInput.text = PlayerPrefs.GetString("PurpleScoredText");
+            ReadSavedTextsToInput();
             pauseMenu.SetActive(true);
             Time.timeScale = 0;
         }
         // unpause
         else
         {
-            PlayerPrefs.SetString("BlueScoredText", blueScoredInput.text);
-            PlayerPrefs.SetString("PurpleScoredText", purpleScoredInput.text);
-            soccerSettings.blueCelebrationText = blueScoredInput.text;
-            soccerSettings.purpleCelebrationText = purpleScoredInput.text;
+            PlayerPrefs.SetString("BlueGoalCelebrationText", blueGoalCelebrationInput.text);
+            PlayerPrefs.SetString("BlueWinnerCelebrationText", blueWinnerCelebrationInput.text);
+            PlayerPrefs.SetString("OrangeGoalCelebrationText", orangeGoalCelebrationInput.text);
+            PlayerPrefs.SetString("OrangeWinnerCelebrationText", orangeWinnerCelebrationInput.text);
+            PlayerPrefs.SetString("DrawText", drawInput.text);
+            soccerSettings.blueGoalCelebrationText = blueGoalCelebrationInput.text;
+            soccerSettings.blueWinnerCelebrationText = blueWinnerCelebrationInput.text;
+            soccerSettings.orangeGoalCelebrationText = orangeGoalCelebrationInput.text;
+            soccerSettings.orangeWinnerCelebrationText = orangeWinnerCelebrationInput.text;
+            soccerSettings.drawText = drawInput.text;
             pauseMenu.SetActive(false);
             Time.timeScale = 1;
         }
@@ -106,9 +119,18 @@ public class CanvasController : MonoBehaviour
     public void RestartGame()
     {
         PlayerPrefs.SetInt("BlueScore", 0);
-        PlayerPrefs.SetInt("PurpleScore", 0);
+        PlayerPrefs.SetInt("OrangeScore", 0);
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void ReadSavedTextsToInput()
+    {
+        blueGoalCelebrationInput.text = PlayerPrefs.GetString("BlueGoalCelebrationText", soccerSettings.blueGoalCelebrationText);
+        blueWinnerCelebrationInput.text = PlayerPrefs.GetString("BlueWinnerCelebrationText", soccerSettings.blueWinnerCelebrationText);
+        orangeGoalCelebrationInput.text = PlayerPrefs.GetString("OrangeGoalCelebrationText", soccerSettings.orangeGoalCelebrationText);
+        orangeWinnerCelebrationInput.text = PlayerPrefs.GetString("OrangeWinnerCelebrationText", soccerSettings.orangeWinnerCelebrationText);
+        drawInput.text = PlayerPrefs.GetString("DrawText", soccerSettings.drawText);
     }
 }
 

@@ -426,10 +426,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c32d32dfa994d14a009cc1f393c634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  purpleMaterial: {fileID: 2100000, guid: b0da1813c36914e678ba57f2790424e1, type: 2}
+  orangeMaterial: {fileID: 2100000, guid: b0da1813c36914e678ba57f2790424e1, type: 2}
   blueMaterial: {fileID: 2100000, guid: c9fa44c2c3f8ce74ca39a3355ea42631, type: 2}
   randomizePlayersTeamForTraining: 1
   agentRunSpeed: 2
   gameDuration: 180
-  blueCelebrationText: BLUE SCORED!
-  purpleCelebrationText: ORANGE SCORED!
+  blueTeamName: BLUE
+  orangeTeamName: ORANGE
+  drawText: IT'S A DRAW!
+  blueGoalCelebrationText: SCORED!
+  blueWinnerCelebrationText: WINS!
+  orangeGoalCelebrationText: SCORED!
+  orangeWinnerCelebrationText: WINS!

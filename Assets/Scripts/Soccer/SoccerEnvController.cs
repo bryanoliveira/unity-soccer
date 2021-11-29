@@ -44,7 +44,7 @@ public class SoccerEnvController : MonoBehaviour
 
 
     private SimpleMultiAgentGroup m_BlueAgentGroup;
-    private SimpleMultiAgentGroup m_PurpleAgentGroup;
+    private SimpleMultiAgentGroup m_OrangeAgentGroup;
 
     private int m_ResetTimer;
     private float m_GameTimer;
@@ -53,7 +53,7 @@ public class SoccerEnvController : MonoBehaviour
     [HideInInspector]
     public bool inGame;
     private int blueGoals;
-    private int purpleGoals;
+    private int orangeGoals;
 
     public List<ParticleSystem> goalExplosions;
     private AudioSource audioSource;
@@ -62,9 +62,9 @@ public class SoccerEnvController : MonoBehaviour
     void Start()
     {
         blueGoals = PlayerPrefs.GetInt("BlueScore", 0);
-        purpleGoals = PlayerPrefs.GetInt("PurpleScore", 0);
+        orangeGoals = PlayerPrefs.GetInt("OrangeScore", 0);
         CanvasController.UpdateBlueScore(blueGoals);
-        CanvasController.UpdatePurpleScore(purpleGoals);
+        CanvasController.UpdateOrangeScore(orangeGoals);
         inGame = false;
 
         audioSource = GetComponent<AudioSource>();
@@ -72,7 +72,7 @@ public class SoccerEnvController : MonoBehaviour
         m_GameTimer = m_SoccerSettings.gameDuration;
         // Initialize TeamManager
         m_BlueAgentGroup = new SimpleMultiAgentGroup();
-        m_PurpleAgentGroup = new SimpleMultiAgentGroup();
+        m_OrangeAgentGroup = new SimpleMultiAgentGroup();
         ballRb = ball.GetComponent<Rigidbody>();
         m_BallStartingPos = new Vector3(ball.transform.position.x, ball.transform.position.y, ball.transform.position.z);
         foreach (var item in AgentsList)
@@ -86,7 +86,7 @@ public class SoccerEnvController : MonoBehaviour
             }
             else
             {
-                m_PurpleAgentGroup.RegisterAgent(item.Agent);
+                m_OrangeAgentGroup.RegisterAgent(item.Agent);
             }
         }
         ResetScene();
@@ -115,7 +115,7 @@ public class SoccerEnvController : MonoBehaviour
                 if (m_ResetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
                 {
                     m_BlueAgentGroup.GroupEpisodeInterrupted();
-                    m_PurpleAgentGroup.GroupEpisodeInterrupted();
+                    m_OrangeAgentGroup.GroupEpisodeInterrupted();
                     ResetScene();
                 }
             }
@@ -149,14 +149,14 @@ public class SoccerEnvController : MonoBehaviour
         if (scoredTeam == Team.Blue)
         {
             m_BlueAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
-            m_PurpleAgentGroup.AddGroupReward(-1);
+            m_OrangeAgentGroup.AddGroupReward(-1);
         }
         else
         {
-            m_PurpleAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
+            m_OrangeAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
             m_BlueAgentGroup.AddGroupReward(-1);
         }
-        m_PurpleAgentGroup.EndGroupEpisode();
+        m_OrangeAgentGroup.EndGroupEpisode();
         m_BlueAgentGroup.EndGroupEpisode();
 
         if (isVisualizer)
@@ -182,15 +182,23 @@ public class SoccerEnvController : MonoBehaviour
                 PlayerPrefs.SetInt("BlueScore", blueGoals);
                 CanvasController.UpdateBlueScore(blueGoals);
                 direction = new Vector3(-1, 0, 0);
-                CanvasController.TriggerScoredAnimation(m_SoccerSettings.blueCelebrationText);
+                CanvasController.TriggerScoredAnimation(
+                    m_SoccerSettings.blueTeamName +
+                    " " +
+                    m_SoccerSettings.blueGoalCelebrationText
+                );
             }
             else
             {
-                purpleGoals++;
-                PlayerPrefs.SetInt("PurpleScore", purpleGoals);
-                CanvasController.UpdatePurpleScore(purpleGoals);
+                orangeGoals++;
+                PlayerPrefs.SetInt("orangeScore", orangeGoals);
+                CanvasController.UpdateOrangeScore(orangeGoals);
                 direction = new Vector3(1, 0, 0);
-                CanvasController.TriggerScoredAnimation(m_SoccerSettings.purpleCelebrationText);
+                CanvasController.TriggerScoredAnimation(
+                    m_SoccerSettings.orangeTeamName +
+                    " " +
+                    m_SoccerSettings.orangeGoalCelebrationText
+                );
             }
 
             ExplodeBall();
@@ -202,7 +210,7 @@ public class SoccerEnvController : MonoBehaviour
             yield return new WaitForSeconds(2);
             ResetScene();
 
-            if (Mathf.Abs(purpleGoals - blueGoals) >= 10)
+            if (Mathf.Abs(orangeGoals - blueGoals) >= 10)
             {
                 inGame = true;
                 StartCoroutine(GameOver());
@@ -228,16 +236,24 @@ public class SoccerEnvController : MonoBehaviour
 
             // interrupt mlagents episode
             m_BlueAgentGroup.GroupEpisodeInterrupted();
-            m_PurpleAgentGroup.GroupEpisodeInterrupted();
+            m_OrangeAgentGroup.GroupEpisodeInterrupted();
 
             // cheer and indicate game over
             audioSource.PlayOneShot(cheerSounds[Random.Range(0, cheerSounds.Count)]);
-            if (purpleGoals > blueGoals)
-                CanvasController.TriggerScoredAnimation("ORANGE WINS!");
-            else if (blueGoals > purpleGoals)
-                CanvasController.TriggerScoredAnimation("BLUE WINS!");
+            if (orangeGoals > blueGoals)
+                CanvasController.TriggerScoredAnimation(
+                    m_SoccerSettings.orangeTeamName +
+                    " " +
+                    m_SoccerSettings.orangeWinnerCelebrationText
+                );
+            else if (blueGoals > orangeGoals)
+                CanvasController.TriggerScoredAnimation(
+                    m_SoccerSettings.blueTeamName +
+                    " " +
+                    m_SoccerSettings.blueWinnerCelebrationText
+                );
             else
-                CanvasController.TriggerScoredAnimation("IT'S A DRAW!");
+                CanvasController.TriggerScoredAnimation(m_SoccerSettings.drawText);
 
             ExplodeBall();
 

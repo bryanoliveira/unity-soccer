@@ -7,12 +7,12 @@ using Unity.MLAgents.Policies;
 public enum Team
 {
     Blue = 0,
-    Purple = 1
+    Orange = 1
 }
 
 public class AgentSoccer : Agent
 {
-    // Note that that the detectable tags are different for the blue and purple teams. The order is
+    // Note that that the detectable tags are different for the blue and orange teams. The order is
     // * ball
     // * own goal
     // * opposing goal
@@ -81,7 +81,7 @@ public class AgentSoccer : Agent
         }
         else
         {
-            team = Team.Purple;
+            team = Team.Orange;
             initialPos = new Vector3(transform.position.x + 5f, .5f, transform.position.z);
             rotSign = -1f;
         }

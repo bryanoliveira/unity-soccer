@@ -2787,7 +2787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   area: {fileID: 1141134673700168}
   envController: {fileID: 0}
-  purpleGoalTag: purpleGoal
+  orangeGoalTag: purpleGoal
   blueGoalTag: blueGoal
 --- !u!54 &54100138833592438
 Rigidbody:
