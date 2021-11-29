@@ -91,6 +91,10 @@ public class CanvasController : MonoBehaviour
 
     public void Pause()
     {
+        // update ui
+        blueTeamNameText.text = soccerSettings.blueTeamName;
+        orangeTeamNameText.text = soccerSettings.orangeTeamName;
+
         // pause
         if (Time.timeScale == 1)
         {

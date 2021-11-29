@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
+using Unity.MLAgents.SideChannels;
 using UnityEngine;
 
 public class SoccerEnvController : MonoBehaviour
@@ -41,6 +42,7 @@ public class SoccerEnvController : MonoBehaviour
     public List<PlayerInfo> AgentsList = new List<PlayerInfo>();
 
     private SoccerSettings m_SoccerSettings;
+    EnvConfigurationChannel m_EnvConfigurationChannel;
 
 
     private SimpleMultiAgentGroup m_BlueAgentGroup;
@@ -61,16 +63,19 @@ public class SoccerEnvController : MonoBehaviour
 
     void Start()
     {
+        // load preferences & update canvas
         blueGoals = PlayerPrefs.GetInt("BlueScore", 0);
         orangeGoals = PlayerPrefs.GetInt("OrangeScore", 0);
         CanvasController.UpdateBlueScore(blueGoals);
         CanvasController.UpdateOrangeScore(orangeGoals);
         inGame = false;
 
+        // retrieve objects
         audioSource = GetComponent<AudioSource>();
         m_SoccerSettings = FindObjectOfType<SoccerSettings>();
         m_GameTimer = m_SoccerSettings.gameDuration;
-        // Initialize TeamManager
+
+        // initialize TeamManager
         m_BlueAgentGroup = new SimpleMultiAgentGroup();
         m_OrangeAgentGroup = new SimpleMultiAgentGroup();
         ballRb = ball.GetComponent<Rigidbody>();
@@ -89,12 +94,28 @@ public class SoccerEnvController : MonoBehaviour
                 m_OrangeAgentGroup.RegisterAgent(item.Agent);
             }
         }
-        ResetScene();
 
+        // configure side channels
+        m_EnvConfigurationChannel = new EnvConfigurationChannel();
+        Application.logMessageReceived += m_EnvConfigurationChannel.SendDebugStatementToPython;
+        m_EnvConfigurationChannel.m_SoccerSettings = m_SoccerSettings;
+        SideChannelManager.RegisterSideChannel(m_EnvConfigurationChannel);
+        Debug.Log("EnvConfigurationChannel is set up.");
+
+        // initialize simulation
+        ResetScene();
         if (isVisualizer)
             StartCoroutine(StartDelayed());
         else
             inGame = true;
+    }
+
+    public void OnDestroy()
+    {
+        // De-register the Debug.Log callback
+        Application.logMessageReceived -= m_EnvConfigurationChannel.SendDebugStatementToPython;
+        if (Academy.IsInitialized)
+            SideChannelManager.UnregisterSideChannel(m_EnvConfigurationChannel);
     }
 
     void FixedUpdate()
