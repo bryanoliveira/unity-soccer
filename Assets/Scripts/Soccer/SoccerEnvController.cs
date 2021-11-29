@@ -61,6 +61,18 @@ public class SoccerEnvController : MonoBehaviour
     private AudioSource audioSource;
     public List<AudioClip> cheerSounds;
 
+    void Awake()
+    {
+        m_SoccerSettings = FindObjectOfType<SoccerSettings>();
+
+        // configure side channels
+        m_EnvConfigurationChannel = new EnvConfigurationChannel();
+        Application.logMessageReceived += m_EnvConfigurationChannel.SendDebugStatementToPython;
+        m_EnvConfigurationChannel.m_SoccerSettings = m_SoccerSettings;
+        SideChannelManager.RegisterSideChannel(m_EnvConfigurationChannel);
+        Debug.Log("EnvConfigurationChannel is set up.");
+    }
+
     void Start()
     {
         // load preferences & update canvas
@@ -72,7 +84,6 @@ public class SoccerEnvController : MonoBehaviour
 
         // retrieve objects
         audioSource = GetComponent<AudioSource>();
-        m_SoccerSettings = FindObjectOfType<SoccerSettings>();
         m_GameTimer = m_SoccerSettings.gameDuration;
 
         // initialize TeamManager
@@ -94,13 +105,6 @@ public class SoccerEnvController : MonoBehaviour
                 m_OrangeAgentGroup.RegisterAgent(item.Agent);
             }
         }
-
-        // configure side channels
-        m_EnvConfigurationChannel = new EnvConfigurationChannel();
-        Application.logMessageReceived += m_EnvConfigurationChannel.SendDebugStatementToPython;
-        m_EnvConfigurationChannel.m_SoccerSettings = m_SoccerSettings;
-        SideChannelManager.RegisterSideChannel(m_EnvConfigurationChannel);
-        Debug.Log("EnvConfigurationChannel is set up.");
 
         // initialize simulation
         ResetScene();
