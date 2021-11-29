@@ -98,23 +98,24 @@ public class CanvasController : MonoBehaviour
         // pause
         if (Time.timeScale == 1)
         {
-            ReadSavedTextsToInput();
+            blueGoalCelebrationInput.text = soccerSettings.blueGoalCelebrationText;
+            blueWinnerCelebrationInput.text = soccerSettings.blueWinnerCelebrationText;
+            orangeGoalCelebrationInput.text = soccerSettings.orangeGoalCelebrationText;
+            orangeWinnerCelebrationInput.text = soccerSettings.orangeWinnerCelebrationText;
+            drawInput.text = soccerSettings.drawText;
             pauseMenu.SetActive(true);
             Time.timeScale = 0;
         }
         // unpause
         else
         {
-            PlayerPrefs.SetString("BlueGoalCelebrationText", blueGoalCelebrationInput.text);
-            PlayerPrefs.SetString("BlueWinnerCelebrationText", blueWinnerCelebrationInput.text);
-            PlayerPrefs.SetString("OrangeGoalCelebrationText", orangeGoalCelebrationInput.text);
-            PlayerPrefs.SetString("OrangeWinnerCelebrationText", orangeWinnerCelebrationInput.text);
-            PlayerPrefs.SetString("DrawText", drawInput.text);
-            soccerSettings.blueGoalCelebrationText = blueGoalCelebrationInput.text;
-            soccerSettings.blueWinnerCelebrationText = blueWinnerCelebrationInput.text;
-            soccerSettings.orangeGoalCelebrationText = orangeGoalCelebrationInput.text;
-            soccerSettings.orangeWinnerCelebrationText = orangeWinnerCelebrationInput.text;
-            soccerSettings.drawText = drawInput.text;
+            soccerSettings.SetUITexts(
+                blueGoalCelebrationInput.text,
+                blueWinnerCelebrationInput.text,
+                orangeGoalCelebrationInput.text,
+                orangeWinnerCelebrationInput.text,
+                drawInput.text
+            );
             pauseMenu.SetActive(false);
             Time.timeScale = 1;
         }
@@ -122,19 +123,9 @@ public class CanvasController : MonoBehaviour
 
     public void RestartGame()
     {
-        PlayerPrefs.SetInt("BlueScore", 0);
-        PlayerPrefs.SetInt("OrangeScore", 0);
+        soccerSettings.ResetPrefs();
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    private void ReadSavedTextsToInput()
-    {
-        blueGoalCelebrationInput.text = PlayerPrefs.GetString("BlueGoalCelebrationText", soccerSettings.blueGoalCelebrationText);
-        blueWinnerCelebrationInput.text = PlayerPrefs.GetString("BlueWinnerCelebrationText", soccerSettings.blueWinnerCelebrationText);
-        orangeGoalCelebrationInput.text = PlayerPrefs.GetString("OrangeGoalCelebrationText", soccerSettings.orangeGoalCelebrationText);
-        orangeWinnerCelebrationInput.text = PlayerPrefs.GetString("OrangeWinnerCelebrationText", soccerSettings.orangeWinnerCelebrationText);
-        drawInput.text = PlayerPrefs.GetString("DrawText", soccerSettings.drawText);
     }
 }
 

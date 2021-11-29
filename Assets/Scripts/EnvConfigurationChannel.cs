@@ -26,10 +26,10 @@ public class EnvConfigurationChannel : SideChannel
         switch (messageType)
         {
             case ConfigurationType.BlueTeamName:
-                m_SoccerSettings.blueTeamName = msg.ReadString();
+                m_SoccerSettings.SetBlueTeamName(msg.ReadString());
                 break;
             case ConfigurationType.OrangeTeamName:
-                m_SoccerSettings.orangeTeamName = msg.ReadString();
+                m_SoccerSettings.SetOrangeTeamName(msg.ReadString());
                 break;
             default:
                 Debug.LogWarning(

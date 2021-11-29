@@ -76,8 +76,8 @@ public class SoccerEnvController : MonoBehaviour
     void Start()
     {
         // load preferences & update canvas
-        blueGoals = PlayerPrefs.GetInt("BlueScore", 0);
-        orangeGoals = PlayerPrefs.GetInt("OrangeScore", 0);
+        blueGoals = m_SoccerSettings.GetBlueScore();
+        orangeGoals = m_SoccerSettings.GetOrangeScore();
         CanvasController.UpdateBlueScore(blueGoals);
         CanvasController.UpdateOrangeScore(orangeGoals);
         inGame = false;
@@ -204,7 +204,7 @@ public class SoccerEnvController : MonoBehaviour
             if (isBlueTeam)
             {
                 blueGoals++;
-                PlayerPrefs.SetInt("BlueScore", blueGoals);
+                m_SoccerSettings.SetBlueScore(blueGoals);
                 CanvasController.UpdateBlueScore(blueGoals);
                 direction = new Vector3(-1, 0, 0);
                 CanvasController.TriggerScoredAnimation(
@@ -216,7 +216,7 @@ public class SoccerEnvController : MonoBehaviour
             else
             {
                 orangeGoals++;
-                PlayerPrefs.SetInt("orangeScore", orangeGoals);
+                m_SoccerSettings.SetOrangeScore(orangeGoals);
                 CanvasController.UpdateOrangeScore(orangeGoals);
                 direction = new Vector3(1, 0, 0);
                 CanvasController.TriggerScoredAnimation(
