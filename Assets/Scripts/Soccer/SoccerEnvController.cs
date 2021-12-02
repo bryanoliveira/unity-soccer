@@ -69,6 +69,7 @@ public class SoccerEnvController : MonoBehaviour
         m_EnvConfigurationChannel = new EnvConfigurationChannel();
         Application.logMessageReceived += m_EnvConfigurationChannel.SendDebugStatementToPython;
         m_EnvConfigurationChannel.m_SoccerSettings = m_SoccerSettings;
+        m_EnvConfigurationChannel.m_SoccerEnvController = this;
         SideChannelManager.RegisterSideChannel(m_EnvConfigurationChannel);
         Debug.Log("EnvConfigurationChannel is set up.");
     }
@@ -321,4 +322,34 @@ public class SoccerEnvController : MonoBehaviour
         //Reset Ball
         ResetBall();
     }
+
+    public void SetBallPosition(float x, float z)
+    {
+        ball.transform.position = new Vector3(x, m_BallStartingPos.y, z);
+    }
+    public void SetBallVelocity(float x, float z)
+    {
+        ballRb.velocity = new Vector3(x, 0, z);
+    }
+
+    public void SetPlayerPosition(int agentId, float x, float z)
+    {
+        var agent = AgentsList[agentId].Agent;
+        agent.transform.position = (
+            new Vector3(x, agent.initialPos.y, z)
+        );
+    }
+    public void SetPlayerVelocity(int agentId, float x, float z)
+    {
+        AgentsList[agentId].Rb.velocity = (
+            new Vector3(x, 0, z)
+        );
+    }
+    public void SetPlayerRotation(int agentId, float y)
+    {
+        AgentsList[agentId].Agent.transform.rotation = (
+            Quaternion.Euler(0, y, 0)
+        );
+    }
+
 }
