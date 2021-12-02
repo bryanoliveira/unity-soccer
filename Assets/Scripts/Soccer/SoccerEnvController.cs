@@ -76,14 +76,6 @@ public class SoccerEnvController : MonoBehaviour
 
     void Start()
     {
-        // load preferences & update canvas
-        blueGoals = m_SoccerSettings.GetBlueScore();
-        orangeGoals = m_SoccerSettings.GetOrangeScore();
-        if (isVisualizer)
-        {
-            CanvasController.UpdateBlueScore(blueGoals);
-            CanvasController.UpdateOrangeScore(orangeGoals);
-        }
         inGame = false;
 
         // retrieve objects
@@ -110,10 +102,18 @@ public class SoccerEnvController : MonoBehaviour
             }
         }
 
+        // load preferences
+        blueGoals = m_SoccerSettings.GetBlueScore();
+        orangeGoals = m_SoccerSettings.GetOrangeScore();
+
         // initialize simulation
         ResetScene();
         if (isVisualizer)
+        {
+            CanvasController.UpdateBlueScore(blueGoals);
+            CanvasController.UpdateOrangeScore(orangeGoals);
             StartCoroutine(StartDelayed());
+        }
         else
             inGame = true;
     }
