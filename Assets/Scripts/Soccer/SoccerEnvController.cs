@@ -79,8 +79,11 @@ public class SoccerEnvController : MonoBehaviour
         // load preferences & update canvas
         blueGoals = m_SoccerSettings.GetBlueScore();
         orangeGoals = m_SoccerSettings.GetOrangeScore();
-        CanvasController.UpdateBlueScore(blueGoals);
-        CanvasController.UpdateOrangeScore(orangeGoals);
+        if (isVisualizer)
+        {
+            CanvasController.UpdateBlueScore(blueGoals);
+            CanvasController.UpdateOrangeScore(orangeGoals);
+        }
         inGame = false;
 
         // retrieve objects
