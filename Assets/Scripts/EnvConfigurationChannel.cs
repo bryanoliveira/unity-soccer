@@ -43,7 +43,7 @@ public class EnvConfigurationChannel : SideChannel
             case ConfigurationType.PlayerPosition:
                 playerIndex = msg.ReadInt32();
                 vecValue = msg.ReadFloatList();
-                m_SoccerEnvController.SetPlayerVelocity(playerIndex, vecValue[0], vecValue[1]);
+                m_SoccerEnvController.SetPlayerPosition(playerIndex, vecValue[0], vecValue[1]);
                 break;
             case ConfigurationType.PlayerVelocity:
                 playerIndex = msg.ReadInt32();
