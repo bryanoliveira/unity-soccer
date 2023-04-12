@@ -52,10 +52,13 @@ public class SoccerEnvController : MonoBehaviour
     private float m_GameTimer;
 
     public bool isVisualizer = false;
+    private bool randomizePositions = true;
     [HideInInspector]
     public bool inGame;
     private int blueGoals;
     private int orangeGoals;
+    private int currentBlueGoals = 0;
+    private int currentOrangeGoals = 0;
 
     public List<ParticleSystem> goalExplosions;
     private AudioSource audioSource;
@@ -77,6 +80,7 @@ public class SoccerEnvController : MonoBehaviour
     void Start()
     {
         inGame = false;
+        randomizePositions = !isVisualizer;
 
         // retrieve objects
         audioSource = GetComponent<AudioSource>();
@@ -154,7 +158,7 @@ public class SoccerEnvController : MonoBehaviour
     public void ResetBall()
     {
         ball.transform.position = m_BallStartingPos;
-        if (!isVisualizer)
+        if (randomizePositions)
             ball.transform.position += new Vector3(
                 Random.Range(-2.5f, 2.5f),
                 0f,
@@ -207,7 +211,8 @@ public class SoccerEnvController : MonoBehaviour
             Vector3 direction;
             if (isBlueTeam)
             {
-                blueGoals++;
+                blueGoals++; // keeps score between games
+                currentBlueGoals++; // resets each game
                 m_SoccerSettings.SetBlueScore(blueGoals);
                 CanvasController.UpdateBlueScore(blueGoals);
                 direction = new Vector3(-1, 0, 0);
@@ -219,7 +224,8 @@ public class SoccerEnvController : MonoBehaviour
             }
             else
             {
-                orangeGoals++;
+                orangeGoals++; // keeps score between games
+                currentOrangeGoals++; // resets each game
                 m_SoccerSettings.SetOrangeScore(orangeGoals);
                 CanvasController.UpdateOrangeScore(orangeGoals);
                 direction = new Vector3(1, 0, 0);
@@ -239,7 +245,8 @@ public class SoccerEnvController : MonoBehaviour
             yield return new WaitForSeconds(2);
             ResetScene();
 
-            if (Mathf.Abs(orangeGoals - blueGoals) >= 10)
+            // ends the game if a score limit is reached in this current run
+            if (Mathf.Abs(currentOrangeGoals - currentBlueGoals) >= 10)
             {
                 inGame = true;
                 StartCoroutine(GameOver());
@@ -311,7 +318,7 @@ public class SoccerEnvController : MonoBehaviour
         {
             var newStartPos = item.Agent.initialPos;
             var rot = item.Agent.rotSign * 90.0f;
-            if (!isVisualizer)
+            if (randomizePositions)
             {
                 newStartPos += new Vector3(Random.Range(-5f, 5f), 0f, 0f);
                 rot *= Random.Range(0.85f, 1.15f);
